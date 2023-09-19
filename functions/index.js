@@ -10,6 +10,11 @@ app.use(express.json());
 const mongoose = require("mongoose");
 //#endregion
 
+//test upload
+const formidable = require ("formidable-serverless");
+const { s3Upload } = require("./util/s3Service");
+//end test upload
+
 // Import your route handlers
 const userRouter = require('./src/Routes/user.routes');
 const productRouter = require('./src/Routes/product.routes');
@@ -38,5 +43,30 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+//#region Upload test
+app.post("/upload", async (req, res) => {
+  const form = new formidable.IncomingForm({ multiples: true });
+
+  try {
+    form.parse(req, async (err, fields, files) => {
+      let filesToUpload = files.file;
+
+      // Wrap single file in an array if it's not already an array
+      if (!Array.isArray(filesToUpload)) {
+        filesToUpload = [filesToUpload];
+      }
+
+      const results = await s3Upload(filesToUpload);
+      console.log(results);
+      return res.json({ status: "success" });
+    });
+  } catch (e) {
+    // Handle error
+    console.error(e);
+    return res.status(500).json({ status: "error", message: "An error occurred." });
+  }
+});
+//#endregion
 
 exports.server = functions.https.onRequest(app);
