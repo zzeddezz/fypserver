@@ -1,12 +1,32 @@
 const productService = require("../Services/product.service");
+const formidable = require("formidable-serverless");
+const {s3Upload} = require("../../util/s3Service");
 
 const createProduct = async (req, res, next) => {
-  try {
-    const product = await productService.createProduct(req);
-    //const imageUrl = `http://localhost:3001/${product.name}/${product.images.originalName}`;
-    //product.imageUrl = imageUrl;
+  const form = new formidable.IncomingForm({ multiples: true });
 
-    res.status(200).json(product);
+  try {
+    form.parse(req, async (err, fields, files) => {
+      let filesToUpload = files.images;
+
+      // Wrap single file in an array if it's not already an array
+      if (!Array.isArray(filesToUpload)) {
+        filesToUpload = [filesToUpload];
+      }
+
+      const imageUrls = await s3Upload(filesToUpload);
+      for (let i=0; i<filesToUpload.length; i++) {
+        filesToUpload[i].url = imageUrls[i*2].Link;
+      }
+
+      const prodReq = {
+        body: fields,
+        files: filesToUpload
+      }
+
+      const product = await productService.createProduct(prodReq);
+      return res.status(200).json(product);
+    });
   } catch (error) {
     next(error);
   }

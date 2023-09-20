@@ -4,14 +4,14 @@ const createProduct = async (data) => {
   const arrData = data.body;
   const arrFile = data.files;
 
-  const splitWord = (path) => {
-    const parts = path.split("\\");
-    return parts.slice(1).join("/");
-  };
+  // const splitWord = (path) => {
+  //   const parts = path.split("\\");
+  //   return parts.slice(1).join("/");
+  // };
 
   const fileItem = arrFile.map((image, key) => {
     return {
-      path: splitWord(image.path),
+      path: image.url,
       originalName: image.originalname,
       mimeType: image.mimetype,
     };
