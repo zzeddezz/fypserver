@@ -21,12 +21,14 @@ const userRouter = require('./src/Routes/user.routes');
 const productRouter = require('./src/Routes/product.routes');
 const bookingRouter = require('./src/Routes/booking.routes');
 const workProgressRouter = require('./src/Routes/workprogress.routes');
+const dashboardRouter = require("./src/Routes/dahboard.routes");
 
 // Mount Routes
 app.use('/user', userRouter);
 app.use('/product', productRouter);
 app.use('/booking', bookingRouter);
 app.use('/work', workProgressRouter);
+app.use("/dashboard", dashboardRouter);
 
 const MONGO_USER = process.env.MONGO_USER;
 const MONGO_PASS = process.env.MONGO_PASSWORD;
