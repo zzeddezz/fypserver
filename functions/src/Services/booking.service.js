@@ -123,6 +123,8 @@ const getUserBooking = async (data) => {
       bookingDate: booking[i].bookingDate,
       status: booking[i].status,
       reason: booking[i].reason,
+      address: booking[i].address,
+      bookingKey: booking[i].bookingKey,
     };
 
     bookingArray.push(bookingData);

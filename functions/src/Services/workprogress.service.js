@@ -11,6 +11,7 @@ const getWork = async () => {
 
   for (let x = 0; x < workProgress.length; x++) {
     workData = {
+      _id: workProgress[x]._id,
       name: workProgress[x].booking.name,
       email: workProgress[x].booking.email,
       phone: workProgress[x].booking.phone,
